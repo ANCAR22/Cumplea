@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>¡Feliz Cumpleaños Mi amor!</title>
+  <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
+  <style>
+    body {
+      background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+      min-height: 100vh;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Pacifico', cursive;
+      overflow: hidden;
+    }
+    h1 {
+      color: #ff4081;
+      font-size: 3em;
+      margin-bottom: 0.5em;
+      text-shadow: 2px 2px 8px #fff;
+      animation: bounce 1.5s infinite alternate;
+    }
+    @keyframes bounce {
+      to { transform: translateY(-20px); }
+    }
+    .cake {
+      position: relative;
+      width: 300px;
+      height: 300px;
+      margin: 0 auto;
+      z-index: 1;
+    }
+    .cake-base {
+      position: absolute;
+      bottom: 40px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 220px;
+      height: 80px;
+      background: #ffb347;
+      border-radius: 0 0 100px 100px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+      animation: appear 1s ease-in;
+    }
+    .cake-layer {
+      position: absolute;
+      bottom: 120px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 180px;
+      height: 60px;
+      background: #fff;
+      border-radius: 100px 100px 80px 80px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.10);
+      animation: appear 1.2s 0.5s ease-in backwards;
+    }
+    .cake-icing {
+      position: absolute;
+      bottom: 170px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 160px;
+      height: 30px;
+      background: #ff4081;
+      border-radius: 80px 80px 60px 60px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      animation: appear 1.4s 1s ease-in backwards;
+    }
+    @keyframes appear {
+      from { opacity: 0; transform: scaleY(0.5) translateX(-50%); }
+      to { opacity: 1; transform: scaleY(1) translateX(-50%); }
+    }
+    .candles {
+      position: absolute;
+      bottom: 190px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 30px;
+      z-index: 2;
+    }
+    .candle {
+      width: 16px;
+      height: 40px;
+      background: repeating-linear-gradient(45deg, #fff, #fff 6px, #ffb347 6px, #ffb347 12px);
+      border-radius: 8px;
+      position: relative;
+      opacity: 0;
+      animation: candleIn 0.8s forwards;
+    }
+    .candle:nth-child(1) { animation-delay: 1.6s; }
+    .candle:nth-child(2) { animation-delay: 1.8s; }
+    .candle:nth-child(3) { animation-delay: 2s; }
+    .flame {
+      position: absolute;
+      top: -18px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 16px;
+      height: 24px;
+      background: radial-gradient(circle at 50% 60%, #fff176 60%, #ff9800 100%);
+      border-radius: 50% 50% 60% 60%;
+      opacity: 0;
+      animation: flameFlicker 0.5s 2.2s forwards, flicker 1.2s 2.7s infinite alternate;
+    }
+    .candle:nth-child(2) .flame { animation-delay: 2.4s, 2.9s; }
+    .candle:nth-child(3) .flame { animation-delay: 2.6s, 3.1s; }
+    @keyframes candleIn {
+      to { opacity: 1; }
+    }
+    @keyframes flameFlicker {
+      to { opacity: 1; }
+    }
+    @keyframes flicker {
+      0% { transform: translateX(-50%) scaleY(1); }
+      100% { transform: translateX(-50%) scaleY(1.2) scaleX(0.9); }
+    }
+    .confetti {
+      position: absolute;
+      top: 0; left: 0; width: 100%; height: 100%; pointer-events: none;
+      z-index: 10;
+    }
+  </style>
+</head>
+<body>
+  <h1>¡Feliz Cumpleaños Mi amor!</h1>
+  <div class="cake">
+    <div class="cake-base"></div>
+    <div class="cake-layer"></div>
+    <div class="cake-icing"></div>
+    <div class="candles">
+      <div class="candle"><div class="flame"></div></div>
+      <div class="candle"><div class="flame"></div></div>
+      <div class="candle"><div class="flame"></div></div>
+    </div>
+  </div>
+  <canvas class="confetti"></canvas>
+  <script>
+    
+    const canvas = document.querySelector('.confetti');
+    const ctx = canvas.getContext('2d');
+    let W = window.innerWidth;
+    let H = window.innerHeight;
+    canvas.width = W;
+    canvas.height = H;
+    const pieces = [];
+    for(let i=0; i<80; i++) {
+      pieces.push({
+        x: Math.random()*W,
+        y: Math.random()*H,
+        r: Math.random()*8+4,
+        d: Math.random()*W/50+2,
+        color: `hsl(${Math.random()*360},80%,60%)`,
+        tilt: Math.random()*10-5,
+        tiltAngle: 0
+      });
+    }
+    function drawConfetti() {
+      ctx.clearRect(0,0,W,H);
+      for(let p of pieces) {
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.r, 0, Math.PI*2);
+        ctx.fillStyle = p.color;
+        ctx.fill();
+      }
+      updateConfetti();
+      requestAnimationFrame(drawConfetti);
+    }
+    function updateConfetti() {
+      for(let p of pieces) {
+        p.y += p.d;
+        p.x += Math.sin(p.tiltAngle)*2;
+        p.tiltAngle += 0.05;
+        if(p.y > H) {
+          p.y = -10;
+          p.x = Math.random()*W;
+        }
+      }
+    }
+    drawConfetti();
+ 
+    window.addEventListener('resize', () => {
+      W = window.innerWidth;
+      H = window.innerHeight;
+      canvas.width = W;
+      canvas.height = H;
+    });
+  </script>
+</body>
+</html>
